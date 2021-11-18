@@ -36,9 +36,6 @@ def collect_entries(it):
         else:
             dic[latest_entry].append(sibling)
     del dic['first']
-    for i, j in dic.items():
-        print(i)
-        print(j)
 
     return dic
 
@@ -57,7 +54,9 @@ def get_article(l):
             elif t.strip('.  ') in '23456789':
                 res['senses'].append({'comments': [], 'translations': []})
 
-            elif t.strip()[0] == '[' and t.strip()[-1] == ']' or ')':  # костыль для кринжовых транскрипций
+            elif t.strip()[-2:] == ' [' and t.strip()[:2] == '- ':
+                pass
+            elif t.strip()[0] == '[' and t.strip()[-1] in [']', ')']:  # костыль для кринжовых транскрипций
                 res['transliteration'] = t.strip(' \t[])')
                 res['senses'].append({'comments': [], 'translations': []})
             elif t.strip()[0] == ']' and t.strip()[-1] == '.':  # костыль для кринжовых помет
@@ -108,7 +107,7 @@ def get_article(l):
                 for line in t.strings:
                     if 'index' in line:
                         trans += line
-                trans = trans.replace('[index]', '').replace('[/index]', '').strip(';—. ').split(';')
+                trans = trans.replace('[index]', '').replace('[/index]', '').strip(';—. \t').split(';')
                 res['collocations'][t.span.text] = {'translations': trans, 'comments': ''}
                 if t.i:
                     res['collocations'][t.span.text]['comments'] = t.i.text
@@ -148,10 +147,8 @@ for i, j in enumerate(pages):
 
 
 # writing down the data
-with open("new_dictionary.json", "w") as f:
-    json.dump(dictionary, f, indent=4)
+with open("new_dictionary.json", "w", encoding='utf-8') as f:
+    json.dump(dictionary, f, indent=4, ensure_ascii=False)
 
 
 # tbd:  1. make a csv 2. make an alphabetical stucture 3. make the russian key list
-
-print(dictionary)
