@@ -19,31 +19,6 @@ span class='xarf fa' -- orthographic entry (&zwnj; => "‌" -- но мб авт�
     
 span style='color:gray; > span clas='xarf fa' & i &  "[index]...[/index]; [index]...[/index].") -- collocation
 & br*2 pre -- border
-
-dic structure:
-{
-persian: {
-    trans: ""
-    senses: [
-        {
-            comments: ["", ...],
-            translations: [
-                ("translation", "context),
-                ...
-                ]
-        }, 
-        ...
-        ], 
-    collocations: {
-        coll: {
-            comments: ["", ...],
-            translations: ["", ...]
-            }
-        }
-    },
-persian: ...,
-...
-}
 """
 
 
@@ -75,7 +50,6 @@ def get_article(l):
     res = {'transliteration': '', 'senses': [], 'collocations': {}}
     double = False  # часть костыля
     for t in l:
-        print(t)
 
         if type(t) == bs4.element.NavigableString:
             if t.strip() in '[] !!!1.;,.    ()!':
@@ -138,8 +112,6 @@ def get_article(l):
                 res['collocations'][t.span.text] = {'translations': trans, 'comments': ''}
                 if t.i:
                     res['collocations'][t.span.text]['comments'] = t.i.text
-    print(res)
-    print('\nновый раз\n')
 
     return res
 
@@ -153,7 +125,6 @@ def extractor(s):
     content = content.contents[5].contents[3].find_all('pre')[1].next_siblings
 
     res = collect_entries(content)
-    print('\nперестатеиваем\n')
     for k, v in res.items():
         res[k] = get_article(v)
 
@@ -183,6 +154,4 @@ with open("new_dictionary.json", "w") as f:
 
 # tbd:  1. make a csv 2. make an alphabetical stucture 3. make the russian key list
 
-# html = '''''' ] «
-# print(extractor(html))
 print(dictionary)
